@@ -15,14 +15,23 @@ using System.Windows.Shapes;
 
 namespace Rozzo_RestClient
 {
+    enum OrderBy : byte { Discount, AuthorName, BookName, FinalPrice, OriginalPrice }
+
     /// <summary>
     /// Logica di interazione per MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+        private void InitOrderBy()
+        {
+            for (byte i = 0; i < 5; i++)
+                cmbBox_orderBy.Items.Add(((OrderBy)i).ToString());
+        }
+
         public MainWindow()
         {
             InitializeComponent();
+            InitOrderBy();
         }
     }
 }
