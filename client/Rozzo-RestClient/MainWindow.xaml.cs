@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 namespace Rozzo_RestClient
 {
     enum OrderBy : byte { Discount, AuthorName, BookName, FinalPrice, OriginalPrice }
+    enum Category : byte { ToNotBeMissed, BestSellers, LatestArrivals, SpecialOffers, Remainders };
 
     /// <summary>
     /// Logica di interazione per MainWindow.xaml
@@ -24,8 +25,12 @@ namespace Rozzo_RestClient
     {
         private void InitOrderBy()
         {
-            for (byte i = 0; i < 5; i++)
-                cmbBox_orderBy.Items.Add(((OrderBy)i).ToString());
+            cmbBox_orderBy.ItemsSource = new string[] { "Sconto", "Nome dell'autore", "Nome del libro", "Prezzo finale", "Prezzo originale" }; 
+        }
+
+        private void InitCategory()
+        {
+            cmbBox_category.ItemsSource = new string[] { "Da non perdere", "I più venduti", "Ultimi arrivi", "Offerte speciali", "Invenduti" };
         }
 
         public MainWindow()
@@ -33,5 +38,6 @@ namespace Rozzo_RestClient
             InitializeComponent();
             InitOrderBy();
         }
+
     }
 }
