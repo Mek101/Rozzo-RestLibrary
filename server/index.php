@@ -6,21 +6,20 @@
 			$name=$_GET['name'];
 			
 			switch($name){
-				case 0:
+				case 1:
+					$cont = fumetti();
+					if($cont == 0)
+						deliver_response(404,"not found", NULL);
+					else
+					{
+						deliver_response(200, 'success', $cont);
+					}
+					return $cont;
+					break;
+				case 2:
 					
-			
-			}
-			
-			
-			
-			$price=get_price($name);
-	
-			if(empty($price))
-		//book not found
-			deliver_response(200,"book not found", NULL);
-			else
-			//respond book price
-			deliver_response(200,"book found", $price);
+					
+			}	
 	}
 	else
 	{
