@@ -32,10 +32,21 @@ namespace Rozzo_RestClient
         public MainWindow()
         {
             InitializeComponent();
-            _querier = new Querier(, 80)
+            InitCategory();
+            _querier = new Querier(new Uri("http://10.13.100.31/json_server/index.php"), 80);
         }
 
 
-        public 
+        private async void GetQuantityOfIn(Category category, string repart)
+        {
+            IReadOnlyResponse<int> response = await _querier.QuantityOfIn(category, repart);
+            MessageBox.Show(response.Message + "\n" + response.Data, response.StatusCode.ToString());
+        }
+
+
+        private void btn_quantityOfIn_Click(object sender, RoutedEventArgs e)
+        {
+            GetQuantityOfIn((Category)(cmbBox_category.SelectedIndex + 1), txtBox_repart.Text);
+        }
     }
 }

@@ -11,6 +11,7 @@
         <Label Content="Reparto" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top"/>
         <Label Content="Categoria" HorizontalAlignment="Left" Margin="135,34,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="txtBox_repart" HorizontalAlignment="Left" Height="23" Margin="10,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <Button x:Name="btn_quantityOfIn" Content="1: quantity of in" HorizontalAlignment="Left" Margin="365,65,0,0" VerticalAlignment="Top" Width="101" Click="btn_quantityOfIn_Click"/>
 
     </Grid>
 </Window>

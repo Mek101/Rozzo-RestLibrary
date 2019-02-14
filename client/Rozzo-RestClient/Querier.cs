@@ -19,6 +19,7 @@ namespace Rozzo_RestClient
 
             public static JsonContent<TData> GetContent(string jsonContent)
             {
+                System.Windows.MessageBox.Show(jsonContent);
                 return _deserializer.Deserialize<JsonContent<TData>>(jsonContent);
             }
 
@@ -49,9 +50,9 @@ namespace Rozzo_RestClient
         #region Query utilities
         private string BuildRequestQuery(Service service, params object[] arguments)
         {
-            string query = "?" + ((byte)service).ToString();
+            string query = "?name=" + ((byte)service).ToString();
             foreach (object arg in arguments)
-                query += "&" + arg.GetType().ToString().ToLower() + "=" + arg.ToString();
+                query += "&" + arg.ToString().ToLower() + "=" + arg.ToString().ToLower();
 
             return query;           
         }
@@ -61,7 +62,7 @@ namespace Rozzo_RestClient
             using (HttpClient client = new HttpClient())
             {
                 UriBuilder builder = new UriBuilder(_remoteUrl);
-                builder.Scheme += query;
+                builder.Path += query;
 
                 using (HttpResponseMessage response = await client.GetAsync(builder.Uri))
                 {
@@ -78,13 +79,11 @@ namespace Rozzo_RestClient
 
 
         #region Public interface
-        public async Task<IReadOnlyResponse<int>> QuantityOfIn(Category category, string repart)
+        public Task<IReadOnlyResponse<int>> QuantityOfIn(Category category, string repart)
         {
             string query = BuildRequestQuery(Service.QuantityOfIn, category, repart);
 
-            IReadOnlyResponse<int> response = await GetJsonResponseAsync<int>(query);
-
-            return response;
+            return GetJsonResponseAsync<int>(query);
         }
         #endregion
     }
