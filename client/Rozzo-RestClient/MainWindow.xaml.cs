@@ -15,7 +15,6 @@ using System.Windows.Shapes;
 
 namespace Rozzo_RestClient
 {
-    enum OrderBy : byte { Discount, AuthorName, BookName, FinalPrice, OriginalPrice }
     enum Category : byte { ToNotBeMissed, BestSellers, LatestArrivals, SpecialOffers, Remainders };
 
     /// <summary>
@@ -23,10 +22,7 @@ namespace Rozzo_RestClient
     /// </summary>
     public partial class MainWindow : Window
     {
-        private void InitOrderBy()
-        {
-            cmbBox_orderBy.ItemsSource = new string[] { "Sconto", "Nome dell'autore", "Nome del libro", "Prezzo finale", "Prezzo originale" }; 
-        }
+        Querier _querier;
 
         private void InitCategory()
         {
@@ -36,8 +32,10 @@ namespace Rozzo_RestClient
         public MainWindow()
         {
             InitializeComponent();
-            InitOrderBy();
+            _querier = new Querier(, 80)
         }
 
+
+        public 
     }
 }
