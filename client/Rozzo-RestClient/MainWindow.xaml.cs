@@ -1,17 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 
 namespace Rozzo_RestClient
 {
@@ -24,6 +14,7 @@ namespace Rozzo_RestClient
     {
         Querier _querier;
 
+        #region Utils
         public MainWindow()
         {
             InitializeComponent();
@@ -32,13 +23,10 @@ namespace Rozzo_RestClient
             _querier.OnDebuggingLog += (o, s) => Dispatcher.Invoke(() => Log(s));
         }
 
-
-        #region Utils
         private void InitCategory()
         {
             cmbBox_category.ItemsSource = new string[] { "Da non perdere", "I più venduti", "Ultimi arrivi", "Offerte speciali", "Invenduti" };
         }
-
 
         private void Log(string s) { lstBox_log.Items.Add(s); }
 
@@ -60,20 +48,17 @@ namespace Rozzo_RestClient
             MessageBox.Show(response.Message + "\n" + response.Data, response.StatusCode.ToString());
         }
 
-
         private async Task GetEnumAllCategory(Category category)
         {
             IReadOnlyResponse<Book[]> response = await _querier.EnumAllCategory(category);
             PrintResponse(response);            
         }
 
-
         private async Task GetEnumDateRange(DateTime start, DateTime end)
         {
             IReadOnlyResponse<Book[]> response = await _querier.EnumDateRange(start, end);
             PrintResponse(response);
         }
-
 
         private async Task GetEnumFromCart(int cartCode)
         {
@@ -99,7 +84,7 @@ namespace Rozzo_RestClient
             DateTime start, end;
             if (DateTime.TryParse(txtBox_startDate.Text, out start) && DateTime.TryParse(txtBox_endDate.Text, out end))
             {
-                if (start >= end)
+                if(start >= end)
                     GetEnumDateRange(start, end).ConfigureAwait(true);
                 else
                     lstBox_log.Items.Add("Starting date is major that the end date!");

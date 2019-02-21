@@ -65,7 +65,7 @@ namespace Rozzo_RestClient
 
                 Log("Targeting uri: " + targetUrl.ToString());
 
-                using (HttpResponseMessage httpResponse = await client.GetAsync(targetUrl.Uri))
+                using (HttpResponseMessage httpResponse = await client.GetAsync(targetUrl))
                 {
                     using(HttpContent content = httpResponse.Content)
                     {
