@@ -34,7 +34,7 @@ namespace Rozzo_RestClient
         
         enum Service : byte { QuantityOfIn = 1, EnumAllCatagory, EnumDateRange, EnumFromCart }
 
-        private Uri _remoteUrl;
+        private readonly Uri _remoteUrl;
 
         public event EventHandler<string> OnDebuggingLog;
         #endregion
@@ -53,11 +53,18 @@ namespace Rozzo_RestClient
         #endregion
 
 
-        #region Query utilities
+        #region Utilities
+        private void Log(string log)
+        {
+            if (OnDebuggingLog != null)
+                OnDebuggingLog(this, log);
+        }
+
+
         private async Task<IReadOnlyResponse<T>> GetJsonResponseAsync<T>(string query)
         {
             Log("Creating query: " + query);
-            using (HttpClient client = new HttpClient())
+            using(HttpClient client = new HttpClient())
             {
                 UriBuilder builder = new UriBuilder(_remoteUrl);
                 builder.Query += query;
@@ -65,7 +72,7 @@ namespace Rozzo_RestClient
 
                 Log("Targeting uri: " + targetUrl.ToString());
 
-                using (HttpResponseMessage httpResponse = await client.GetAsync(targetUrl))
+                using(HttpResponseMessage httpResponse = await client.GetAsync(targetUrl))
                 {
                     using(HttpContent content = httpResponse.Content)
                     {
@@ -113,12 +120,5 @@ namespace Rozzo_RestClient
             return GetJsonResponseAsync<Book[]>(query);
         }
         #endregion
-
-
-        private void Log(string log)
-        {
-            if (OnDebuggingLog != null)
-                OnDebuggingLog(this, log);
-        }
     }
 }
