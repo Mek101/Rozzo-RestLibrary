@@ -14,11 +14,18 @@
 					{
 						deliver_response(200, 'success', $cont);
 					}
-					return $cont;
+					
 					break;
 				case 2:
+					$books = orderSconto();
+					//$jsonBooks = json_encode($books);
+					if($books == NULL)
+						deliver_response(404,"not found", NULL);
+					else
+						deliver_response(200,"success", $books);
 					
-					
+					break;
+						
 			}	
 	}
 	else

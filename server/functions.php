@@ -34,8 +34,10 @@ function fumetti()
 	$str2 = file_get_contents('LibroCateg.json');
 	$libricat = json_decode($str2, true);
 	
-	$str3 = file_get_contents("Categorie.json");
-	$categorie = json_decode($str3, true;);
+	$str3 = file_get_contents('Categorie.json');
+	$categorie = json_decode($str3, true);
+	
+	$queryBooks = array();
 	
 	foreach($categorie["categoria"] as $cat)
 	{
@@ -45,10 +47,11 @@ function fumetti()
 			{
 				if($libcat["categoria"] == $cat["tipo"])
 				{
-					foreach($libri["book"] as $book)
+					foreach($libri["libro"] as $book)
 					{
+						//var_dump($book);
 						if($book["ID"] == $libcat["libro"])
-							array_push($queryBooks, array('sconto'=>$categorie['sconto'], 'id'=>$book['id'], 'titolo'=>$book['titolo']));
+							array_push($queryBooks, array('sconto'=>$cat['sconto'], 'titolo'=>$book['titolo']));
 					}
 				}
 			}
@@ -56,9 +59,24 @@ function fumetti()
 		
 	}
 	
+	
+	
 	asort($queryBooks);
+	
+	
 	
 	return $queryBooks;
  }
  
+ 
+ function archiviati($prima, $seconda)
+ {
+	 $str = file_get_contents('libri.json');
+	 $libri = json_decode($str);
+	 
+	 foreach($libri["libro"] as $lib)
+	 {
+		
+	 }
+ }
 ?>
