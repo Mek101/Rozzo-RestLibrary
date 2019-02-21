@@ -99,10 +99,10 @@ namespace Rozzo_RestClient
             DateTime start, end;
             if (DateTime.TryParse(txtBox_startDate.Text, out start) && DateTime.TryParse(txtBox_endDate.Text, out end))
             {
-                if(start >= end)
+                if (start >= end)
                     GetEnumDateRange(start, end).ConfigureAwait(true);
-
-
+                else
+                    lstBox_log.Items.Add("Starting date is major that the end date!");
             }
             else
                 lstBox_log.Items.Add("Unable to parse date!");
