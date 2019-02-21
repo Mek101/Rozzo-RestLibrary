@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Rozzo_RestClient
 {
@@ -22,20 +24,12 @@ namespace Rozzo_RestClient
 
             public JsonContent(string json)
             {
-                StatusCode = (HttpStatusCode)GetValueOf<int>(json, "status");
-                Message = GetValueOf<string>(json, "status_message");
-                Data = GetValueOf<TData>(json, "data");
-            }
-
-            private TValue GetValueOf<TValue>(string json , string name)
-            {
-                int start = json.IndexOf(name) + 2 + name.Length;
-                if (json[start] != '\"')
-                    throw new Exception("Not a \"!");
-
-                string res = json.Substring()
-
-            }            
+                JObject jObject = JObject.Parse(json);
+                
+                StatusCode = (HttpStatusCode)jObject["status"].ToObject<int>();
+                Message = jObject["status_message"].ToObject<string>();
+                Data = jObject["data"].ToObject<TData>();
+            }           
         }
         
         enum Service : byte { QuantityOfIn = 1, EnumAllCatagory, EnumDateRange, EnumFromCart }
@@ -92,6 +86,30 @@ namespace Rozzo_RestClient
             string query = "name=" + ((byte)Service.QuantityOfIn).ToString() + "&category=" + category.ToString() + "&repart=" + repart;
 
             return GetJsonResponseAsync<int>(query);
+        }
+
+
+        public Task<IReadOnlyResponse<Book[]>> EnumAllCategory(Category category)
+        {
+            string query = "name=" + ((byte)Service.EnumAllCatagory).ToString() + "&category=" + category.ToString();
+
+            return GetJsonResponseAsync<Book[]>(query);
+        }
+
+
+        public Task<IReadOnlyResponse<Book[]>> EnumDateRange(DateTime start, DateTime end)
+        {
+            string query = "name=" + ((byte)Service.EnumDateRange).ToString() + "&start=" + start.ToLongDateString() + "&end=" + end.ToLongDateString();
+
+            return GetJsonResponseAsync<Book[]>(query);
+        }
+
+
+        public Task<IReadOnlyResponse<Book[]>> EnumFromCart(int cartCode)
+        {
+            string query = "name=" + ((byte)Service.EnumFromCart).ToString() + "&cart_code=" + cartCode.ToString();
+
+            return GetJsonResponseAsync<Book[]>(query);
         }
         #endregion
 
