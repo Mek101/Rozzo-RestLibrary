@@ -15,22 +15,34 @@ namespace Rozzo_RestClient
         #region Fields
         private class JsonContent<TData> : IReadOnlyResponse<TData>
         {
-            private static JavaScriptSerializer _deserializer = new JavaScriptSerializer();
+            public HttpStatusCode StatusCode { private set; get; }
+            public string Message { private set; get; }
+            public TData Data { private set; get; }
 
-            public static JsonContent<TData> GetContent(string jsonContent)
+
+            public JsonContent(string json)
             {
-                System.Windows.MessageBox.Show(jsonContent);
-                return _deserializer.Deserialize<JsonContent<TData>>(jsonContent);
+                StatusCode = (HttpStatusCode)GetValueOf<int>(json, "status");
+                Message = GetValueOf<string>(json, "status_message");
+                Data = GetValueOf<TData>(json, "data");
             }
 
-            public HttpStatusCode StatusCode { get; set; }
-            public string Message { get; set; }
-            public TData Data { get; set; }
+            private TValue GetValueOf<TValue>(string json , string name)
+            {
+                int start = json.IndexOf(name) + 2 + name.Length;
+                if (json[start] != '\"')
+                    throw new Exception("Not a \"!");
+
+                string res = json.Substring()
+
+            }            
         }
         
         enum Service : byte { QuantityOfIn = 1, EnumAllCatagory, EnumDateRange, EnumFromCart }
 
         private Uri _remoteUrl;
+
+        public event EventHandler<string> OnDebuggingLog;
         #endregion
 
 
@@ -48,21 +60,15 @@ namespace Rozzo_RestClient
 
 
         #region Query utilities
-        private string BuildRequestQuery(Service service, params object[] arguments)
-        {
-            string query = "?name=" + ((byte)service).ToString();
-            foreach (object arg in arguments)
-                query += "&" + arg.ToString().ToLower() + "=" + arg.ToString().ToLower();
-
-            return query;           
-        }
-
         private async Task<IReadOnlyResponse<T>> GetJsonResponseAsync<T>(string query)
         {
+            Log("Creating query: " + query);
             using (HttpClient client = new HttpClient())
             {
                 UriBuilder builder = new UriBuilder(_remoteUrl);
-                builder.Path += query;
+                builder.Query += query;
+
+                Log("Targeting uri: " + builder.Uri.ToString());
 
                 using (HttpResponseMessage response = await client.GetAsync(builder.Uri))
                 {
@@ -70,7 +76,9 @@ namespace Rozzo_RestClient
                     {
                         string jsonResponse = await content.ReadAsStringAsync();
 
-                        return JsonContent<T>.GetContent(jsonResponse);
+                        Log("Received response: " + jsonResponse);
+
+                        return new JsonContent<T>(jsonResponse);
                     }
                 }
             }
@@ -81,10 +89,17 @@ namespace Rozzo_RestClient
         #region Public interface
         public Task<IReadOnlyResponse<int>> QuantityOfIn(Category category, string repart)
         {
-            string query = BuildRequestQuery(Service.QuantityOfIn, category, repart);
+            string query = "name=" + ((byte)Service.QuantityOfIn).ToString() + "&category=" + category.ToString() + "&repart=" + repart;
 
             return GetJsonResponseAsync<int>(query);
         }
         #endregion
+
+
+        private void Log(string log)
+        {
+            if (OnDebuggingLog != null)
+                OnDebuggingLog(this, log);
+        }
     }
 }
