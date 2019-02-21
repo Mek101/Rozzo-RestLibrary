@@ -34,7 +34,11 @@ namespace Rozzo_RestClient
             InitializeComponent();
             InitCategory();
             _querier = new Querier(new Uri("http://10.13.100.31/json_server/index.php"), 80);
+            _querier.OnDebuggingLog += (o, s) => Dispatcher.Invoke(() => Log(s));
         }
+
+
+        private void Log(string s) { lstBox_log.Items.Add(s); }
 
 
         private async void GetQuantityOfIn(Category category, string repart)
@@ -46,7 +50,7 @@ namespace Rozzo_RestClient
 
         private void btn_quantityOfIn_Click(object sender, RoutedEventArgs e)
         {
-            GetQuantityOfIn((Category)(cmbBox_category.SelectedIndex + 1), txtBox_repart.Text);
+            GetQuantityOfIn((Category)cmbBox_category.SelectedIndex, txtBox_repart.Text);
         }
     }
 }
