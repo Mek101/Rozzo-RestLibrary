@@ -61,18 +61,19 @@ namespace Rozzo_RestClient
             {
                 UriBuilder builder = new UriBuilder(_remoteUrl);
                 builder.Query += query;
+                Uri targetUrl = builder.Uri;
 
-                Log("Targeting uri: " + builder.Uri.ToString());
+                Log("Targeting uri: " + targetUrl.ToString());
 
-                using (HttpResponseMessage response = await client.GetAsync(builder.Uri))
+                using (HttpResponseMessage httpResponse = await client.GetAsync(targetUrl.Uri))
                 {
-                    using(HttpContent content = response.Content)
+                    using(HttpContent content = httpResponse.Content)
                     {
-                        string jsonResponse = await content.ReadAsStringAsync();
+                        string responseContent = await content.ReadAsStringAsync();
 
-                        Log("Received response: " + jsonResponse);
+                        Log("Raw received response: " + responseContent);
 
-                        return new JsonContent<T>(jsonResponse);
+                        return new JsonContent<T>(responseContent);
                     }
                 }
             }
@@ -99,7 +100,7 @@ namespace Rozzo_RestClient
 
         public Task<IReadOnlyResponse<Book[]>> EnumDateRange(DateTime start, DateTime end)
         {
-            string query = "name=" + ((byte)Service.EnumDateRange).ToString() + "&start=" + start.ToLongDateString() + "&end=" + end.ToLongDateString();
+            string query = "name=" + ((byte)Service.EnumDateRange).ToString() + "&start=" + start.ToUniversalTime().ToShortTimeString() + "&end=" + end.ToUniversalTime().ToShortTimeString();
 
             return GetJsonResponseAsync<Book[]>(query);
         }
