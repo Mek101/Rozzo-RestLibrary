@@ -58,6 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Book.cs" />
     <Compile Include="IReadOnlyResponse.cs" />
     <Compile Include="Querier.cs" />
     <Page Include="MainWindow.xaml">
