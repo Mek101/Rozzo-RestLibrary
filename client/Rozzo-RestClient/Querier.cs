@@ -16,14 +16,17 @@ namespace Rozzo_RestClient
             public string Message { private set; get; }
             public TData Data { private set; get; }
 
-
             public JsonContent(string json)
             {
                 JObject jObject = JObject.Parse(json);
                 
                 StatusCode = (HttpStatusCode)jObject["status"].ToObject<int>();
                 Message = jObject["status_message"].ToObject<string>();
-                Data = jObject["data"].ToObject<TData>();
+                
+                if(StatusCode == HttpStatusCode.Success)
+                    Data = jObject["data"].ToObject<TData>();
+                else
+                    Data = default(TData);
             }           
         }
         
@@ -61,7 +64,7 @@ namespace Rozzo_RestClient
             using(HttpClient client = new HttpClient())
             {
                 UriBuilder builder = new UriBuilder(_remoteUrl);
-                builder.Query += query;
+                builder.Query = query;
                 Uri targetUrl = builder.Uri;
 
                 Log("Targeting uri: " + targetUrl.ToString());
