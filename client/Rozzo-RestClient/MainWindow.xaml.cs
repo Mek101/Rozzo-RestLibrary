@@ -87,10 +87,10 @@ namespace Rozzo_RestClient
                 if(start >= end)
                     GetEnumDateRange(start, end).ConfigureAwait(true);
                 else
-                    lstBox_log.Items.Add("Starting date is major that the end date!");
+                    Log("Starting date is major that the end date!");
             }
             else
-                lstBox_log.Items.Add("Unable to parse date!");
+                Log("Unable to parse date!");
         }
 
         private void btn_enumFromCart_Click(object sender, RoutedEventArgs e)
@@ -99,7 +99,7 @@ namespace Rozzo_RestClient
             if (int.TryParse(txtBox_cartCode.Text, out code))
                 GetEnumFromCart(code).ConfigureAwait(true);
             else
-                lstBox_log.Items.Add("unable to parse cart code!");
+                Log("unable to parse cart code!");
         }
         #endregion
     }

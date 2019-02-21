@@ -1,14 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Web.Script.Serialization;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
 
 namespace Rozzo_RestClient
 {
@@ -60,7 +55,6 @@ namespace Rozzo_RestClient
                 OnDebuggingLog(this, log);
         }
 
-
         private async Task<IReadOnlyResponse<T>> GetJsonResponseAsync<T>(string query)
         {
             Log("Creating query: " + query);
@@ -96,7 +90,6 @@ namespace Rozzo_RestClient
             return GetJsonResponseAsync<int>(query);
         }
 
-
         public Task<IReadOnlyResponse<Book[]>> EnumAllCategory(Category category)
         {
             string query = "name=" + ((byte)Service.EnumAllCatagory).ToString() + "&category=" + category.ToString();
@@ -104,14 +97,12 @@ namespace Rozzo_RestClient
             return GetJsonResponseAsync<Book[]>(query);
         }
 
-
         public Task<IReadOnlyResponse<Book[]>> EnumDateRange(DateTime start, DateTime end)
         {
             string query = "name=" + ((byte)Service.EnumDateRange).ToString() + "&start=" + start.ToUniversalTime().ToShortTimeString() + "&end=" + end.ToUniversalTime().ToShortTimeString();
 
             return GetJsonResponseAsync<Book[]>(query);
         }
-
 
         public Task<IReadOnlyResponse<Book[]>> EnumFromCart(int cartCode)
         {
