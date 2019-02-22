@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 
 namespace Rozzo_RestClient
 {
-    class Querier
+    class Querier : IDisposable
     {
         #region Fields
-        private class JsonContent<TData> : IReadOnlyResponse<TData>
+        enum Service : byte { QuantityOfIn = 1, EnumAllCatagory, EnumDateRange, EnumFromCart }
+
+        protected sealed class JsonContent<TData> : IReadOnlyResponse<TData>
         {
             public HttpStatusCode StatusCode { private set; get; }
             public string Message { private set; get; }
@@ -23,16 +26,16 @@ namespace Rozzo_RestClient
                 StatusCode = (HttpStatusCode)jObject["status"].ToObject<int>();
                 Message = jObject["status_message"].ToObject<string>();
                 
-                if(StatusCode == HttpStatusCode.Success)
+                if(StatusCode == HttpStatusCode.OK)
                     Data = jObject["data"].ToObject<TData>();
                 else
                     Data = default(TData);
             }           
         }
-        
-        enum Service : byte { QuantityOfIn = 1, EnumAllCatagory, EnumDateRange, EnumFromCart }
 
-        private readonly Uri _remoteUrl;
+
+        protected readonly Uri _remoteUrl;
+        protected readonly HttpClient _client;
 
         public event EventHandler<string> OnDebuggingLog;
         #endregion
@@ -47,7 +50,10 @@ namespace Rozzo_RestClient
         {
             builder.Port = port;
             _remoteUrl = builder.Uri;
+            _client = new HttpClient();
         }
+
+        public void Dispose() { _client.Dispose(); }
         #endregion
 
 
@@ -58,60 +64,56 @@ namespace Rozzo_RestClient
                 OnDebuggingLog(this, log);
         }
 
-        private async Task<IReadOnlyResponse<T>> GetJsonResponseAsync<T>(string query)
+        private async Task<IReadOnlyResponse<T>> GetJsonResponseAsync<T>(string query, CancellationToken cancellationToken)
         {
-            Log("Creating query: " + query);
-            using(HttpClient client = new HttpClient())
+            UriBuilder builder = new UriBuilder(_remoteUrl);
+            builder.Query = query;
+            Uri targetUrl = builder.Uri;
+
+            Log("Targeting uri: " + targetUrl.ToString());
+
+            using(HttpResponseMessage httpResponse = await _client.GetAsync(targetUrl, cancellationToken))
             {
-                UriBuilder builder = new UriBuilder(_remoteUrl);
-                builder.Query = query;
-                Uri targetUrl = builder.Uri;
-
-                Log("Targeting uri: " + targetUrl.ToString());
-
-                using(HttpResponseMessage httpResponse = await client.GetAsync(targetUrl))
+                using(HttpContent content = httpResponse.Content)
                 {
-                    using(HttpContent content = httpResponse.Content)
-                    {
-                        string responseContent = await content.ReadAsStringAsync();
+                    string responseContent = await content.ReadAsStringAsync();
 
-                        Log("Raw received response: " + responseContent);
+                    Log("Raw received response: " + responseContent);
 
-                        return new JsonContent<T>(responseContent);
-                    }
+                    return new JsonContent<T>(responseContent);
                 }
-            }
+            }            
         }
         #endregion
 
 
         #region Public interface
-        public Task<IReadOnlyResponse<int>> QuantityOfIn(Category category, string repart)
+        public Task<IReadOnlyResponse<int>> QuantityOfInAsync(Category category, string repart, CancellationToken cancellationToken = default(CancellationToken))
         {
             string query = "name=" + ((byte)Service.QuantityOfIn).ToString() + "&category=" + category.ToString() + "&repart=" + repart;
 
-            return GetJsonResponseAsync<int>(query);
+            return GetJsonResponseAsync<int>(query, cancellationToken);
         }
 
-        public Task<IReadOnlyResponse<Book[]>> EnumAllCategory(Category category)
+        public Task<IReadOnlyResponse<Book[]>> EnumerateAllCategoryAsync(Category category, CancellationToken cancellationToken = default(CancellationToken))
         {
             string query = "name=" + ((byte)Service.EnumAllCatagory).ToString() + "&category=" + category.ToString();
 
-            return GetJsonResponseAsync<Book[]>(query);
+            return GetJsonResponseAsync<Book[]>(query, cancellationToken);
         }
 
-        public Task<IReadOnlyResponse<Book[]>> EnumDateRange(DateTime start, DateTime end)
+        public Task<IReadOnlyResponse<Book[]>> EnumerateDateRangeAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default(CancellationToken))
         {
             string query = "name=" + ((byte)Service.EnumDateRange).ToString() + "&start=" + start.ToUniversalTime().ToShortTimeString() + "&end=" + end.ToUniversalTime().ToShortTimeString();
 
-            return GetJsonResponseAsync<Book[]>(query);
+            return GetJsonResponseAsync<Book[]>(query, cancellationToken);
         }
 
-        public Task<IReadOnlyResponse<Book[]>> EnumFromCart(int cartCode)
+        public Task<IReadOnlyResponse<Book[]>> EnumerateFromCartAsync(int cartCode, CancellationToken cancellationToken = default(CancellationToken))
         {
             string query = "name=" + ((byte)Service.EnumFromCart).ToString() + "&cart_code=" + cartCode.ToString();
 
-            return GetJsonResponseAsync<Book[]>(query);
+            return GetJsonResponseAsync<Book[]>(query, cancellationToken);
         }
         #endregion
     }

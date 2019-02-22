@@ -20,7 +20,7 @@ namespace Rozzo_RestClient
             InitializeComponent();
             InitCategory();
             _querier = new Querier(new Uri("http://10.13.100.31/json_server/index.php"), 80);
-            _querier.OnDebuggingLog += (o, s) => Dispatcher.Invoke(() => Log(s));
+            _querier.OnDebuggingLog += (o, s) => Dispatcher.InvokeAsync(() => Log(s));
         }
 
         private void InitCategory()
@@ -44,40 +44,34 @@ namespace Rozzo_RestClient
         #region Queries 
         private async Task GetQuantityOfIn(Category category, string repart)
         {
-            IReadOnlyResponse<int> response = await _querier.QuantityOfIn(category, repart);
+            IReadOnlyResponse<int> response = await _querier.QuantityOfInAsync(category, repart);
             MessageBox.Show(response.Message + "\n" + response.Data, response.StatusCode.ToString());
         }
 
         private async Task GetEnumAllCategory(Category category)
         {
-            IReadOnlyResponse<Book[]> response = await _querier.EnumAllCategory(category);
+            IReadOnlyResponse<Book[]> response = await _querier.EnumerateAllCategoryAsync(category);
             PrintResponse(response);            
         }
 
         private async Task GetEnumDateRange(DateTime start, DateTime end)
         {
-            IReadOnlyResponse<Book[]> response = await _querier.EnumDateRange(start, end);
+            IReadOnlyResponse<Book[]> response = await _querier.EnumerateDateRangeAsync(start, end);
             PrintResponse(response);
         }
 
         private async Task GetEnumFromCart(int cartCode)
         {
-            IReadOnlyResponse<Book[]> response = await _querier.EnumFromCart(cartCode);
+            IReadOnlyResponse<Book[]> response = await _querier.EnumerateFromCartAsync(cartCode);
             PrintResponse(response);
         }
         #endregion
 
 
         #region Buttons
-        private void btn_quantityOfIn_Click(object sender, RoutedEventArgs e)
-        {
-            GetQuantityOfIn(GetSelectedCategory(), txtBox_repart.Text).ConfigureAwait(false);
-        }
+        private void btn_quantityOfIn_Click(object sender, RoutedEventArgs e) { GetQuantityOfIn(GetSelectedCategory(), txtBox_repart.Text).ConfigureAwait(false); }
 
-        private void btn_enumAllCategory_Click(object sender, RoutedEventArgs e)
-        {
-            GetEnumAllCategory(GetSelectedCategory()).ConfigureAwait(true);
-        }
+        private void btn_enumAllCategory_Click(object sender, RoutedEventArgs e) { GetEnumAllCategory(GetSelectedCategory()).ConfigureAwait(true); }
 
         private void btn_enumDateRange_Click(object sender, RoutedEventArgs e)
         {
