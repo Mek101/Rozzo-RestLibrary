@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Rozzo_RestClient
 {
-    class Querier : IDisposable
+    class Querier
     {
         #region Fields
         enum Service : byte { QuantityOfIn = 1, EnumAllCatagory, EnumDateRange, EnumFromCart }
@@ -35,13 +35,18 @@ namespace Rozzo_RestClient
 
 
         protected UriBuilder _remoteUrlBuilder;
-        protected HttpClient _client;
+        protected static HttpClient _client;
 
         public event EventHandler<string> OnDebuggingLog;
         #endregion
 
 
         #region Constructors
+        static Querier()
+        {
+            _client = new HttpClient();
+        }
+
         public Querier(string remoteUrl, int port) : this(new UriBuilder(remoteUrl), port) { }
 
         public Querier(Uri remoteUrl, int port) : this(new UriBuilder(remoteUrl), port) { }
@@ -50,15 +55,15 @@ namespace Rozzo_RestClient
         {
             builder.Port = port;
             _remoteUrlBuilder = builder;
-            _client = new HttpClient();
         }
 
-        public void Dispose()
+        public Querier(string remoteUrl) : this(new UriBuilder(remoteUrl)) { }
+
+        public Querier(Uri remoteUrl) : this(new UriBuilder(remoteUrl)) { }
+
+        private Querier(UriBuilder builder)
         {
-            _remoteUrlBuilder = null;
-            _client.Dispose();
-            _client = null;
-            OnDebuggingLog = null;
+            _remoteUrlBuilder = builder;
         }
         #endregion
 

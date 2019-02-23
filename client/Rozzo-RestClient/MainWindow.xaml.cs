@@ -23,8 +23,6 @@ namespace Rozzo_RestClient
             _querier.OnDebuggingLog += (o, s) => Dispatcher.InvokeAsync(() => Log(s));
         }
 
-        ~MainWindow() { _querier.Dispose(); }
-
         private void InitCategory()
         {
             cmbBox_category.ItemsSource = new string[] { "Da non perdere", "I più venduti", "Ultimi arrivi", "Offerte speciali", "Invenduti" };
