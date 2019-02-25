@@ -25,7 +25,14 @@
 						deliver_response(200,"success", $books);
 					
 					break;
-						
+				case 3:
+					
+					$archivio = dataarc($_GET['start'], $_GET['end']);
+					if($archivio == NULL)
+						deliver_response(404,"not found", NULL);
+					else
+						deliver_response(200, "success", $archivio);
+					break;
 			}	
 	}
 	else

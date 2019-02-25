@@ -69,14 +69,30 @@ function fumetti()
  }
  
  
- function archiviati($prima, $seconda)
+ function dataarc($prima, $seconda)
  {
-	 $str = file_get_contents('libri.json');
-	 $libri = json_decode($str);
+	$str = file_get_contents('Libri.json');
+	$books = json_decode($str, true);
 	 
-	 foreach($libri["libro"] as $lib)
-	 {
+	$queryBooks = array(); 
+	$data1 = new DateTime($prima);
+	$data2 = new DateTime($seconda);
+	 
+	foreach($books['libro'] as $book)
+	{
+		$currentDate = new DateTime($book['dataarc']);
 		
-	 }
+		if(date_diff($data1, $currentDate)->format('%R%a') > 0)
+			if ((date_diff($data1, $currentDate)->format('$R%a')) <= (date_diff($data1, $data2)->format('%R%a')))
+				array_push($queryBooks, $book['titolo']);
+	}
+	
+	$result = "";
+	
+	foreach($queryBooks as $query)
+	{
+		$result .="#".$query;
+	}
+	return $result;
  }
 ?>
