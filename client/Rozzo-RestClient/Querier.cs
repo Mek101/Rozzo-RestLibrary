@@ -15,6 +15,10 @@ namespace Rozzo_RestClient
 
         protected sealed class JsonContent<TData> : IReadOnlyResponse<TData>
         {
+            private const string STATUS = "status";
+            private const string STATUS_MESSAGE = "status_message";
+            private const string DATA = "data";
+
             public HttpStatusCode StatusCode { private set; get; }
             public string Message { private set; get; }
             public TData Data { private set; get; }
@@ -22,12 +26,19 @@ namespace Rozzo_RestClient
             public JsonContent(string json)
             {
                 JObject jObject = JObject.Parse(json);
-                
-                StatusCode = (HttpStatusCode)jObject["status"].ToObject<int>();
-                Message = jObject["status_message"].ToObject<string>();
-                
-                if(StatusCode == HttpStatusCode.OK)
-                    Data = jObject["data"].ToObject<TData>();
+
+                if (json.Contains(STATUS))                
+                    StatusCode = (HttpStatusCode)jObject[STATUS].ToObject<int>();
+                else                
+                    StatusCode = HttpStatusCode.InternalServerError;                
+
+                if (json.Contains(STATUS_MESSAGE))
+                    Message = jObject[STATUS_MESSAGE].ToObject<string>();
+                else
+                    Message = string.Empty;
+
+                if (json.Contains(DATA) && StatusCode == HttpStatusCode.OK)
+                    Data = jObject[DATA].ToObject<TData>();
                 else
                     Data = default(TData);
             }           
@@ -42,10 +53,7 @@ namespace Rozzo_RestClient
 
 
         #region Constructors
-        static Querier()
-        {
-            _client = new HttpClient();
-        }
+        static Querier() { _client = new HttpClient(); }
 
         public Querier(string remoteUrl, int port) : this(new UriBuilder(remoteUrl), port) { }
 
@@ -61,10 +69,7 @@ namespace Rozzo_RestClient
 
         public Querier(Uri remoteUrl) : this(new UriBuilder(remoteUrl)) { }
 
-        private Querier(UriBuilder builder)
-        {
-            _remoteUrlBuilder = builder;
-        }
+        private Querier(UriBuilder builder) { _remoteUrlBuilder = builder; }
         #endregion
 
 
@@ -93,7 +98,7 @@ namespace Rozzo_RestClient
 
                     return new JsonContent<T>(responseContent);
                 }
-            }            
+            }
         }
         #endregion
 
@@ -106,25 +111,25 @@ namespace Rozzo_RestClient
             return QueryAsync<int>(query, cancellationToken);
         }
 
-        public Task<IReadOnlyResponse<Book[]>> EnumerateAllCategoryAsync(Category category, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateAllCategoryAsync(Category category, CancellationToken cancellationToken = default(CancellationToken))
         {
             string query = "name=" + ((byte)Service.EnumAllCatagory).ToString() + "&category=" + category.ToString();
 
-            return QueryAsync<Book[]>(query, cancellationToken);
+            return QueryAsync<ReadOnlyBook[]>(query, cancellationToken);
         }
 
-        public Task<IReadOnlyResponse<Book[]>> EnumerateDateRangeAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateDateRangeAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default(CancellationToken))
         {
             string query = "name=" + ((byte)Service.EnumDateRange).ToString() + "&start=" + start.ToUniversalTime().ToShortTimeString() + "&end=" + end.ToUniversalTime().ToShortTimeString();
 
-            return QueryAsync<Book[]>(query, cancellationToken);
+            return QueryAsync<ReadOnlyBook[]>(query, cancellationToken);
         }
 
-        public Task<IReadOnlyResponse<Book[]>> EnumerateFromCartAsync(int cartCode, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateFromCartAsync(int cartCode, CancellationToken cancellationToken = default(CancellationToken))
         {
             string query = "name=" + ((byte)Service.EnumFromCart).ToString() + "&cart_code=" + cartCode.ToString();
 
-            return QueryAsync<Book[]>(query, cancellationToken);
+            return QueryAsync<ReadOnlyBook[]>(query, cancellationToken);
         }
         #endregion
     }
