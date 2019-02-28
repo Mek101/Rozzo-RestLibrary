@@ -180,7 +180,7 @@ namespace Rozzo_RestClient
         /// <returns>All the books in the cart.</returns>
         public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateFromCartAsync(int cartCode, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string query = GetServiceName(Service.EnumFromCart) + "&cart_code=" + cartCode.ToString();
+            string query = GetServiceName(Service.EnumFromCart) + "&cart=" + cartCode.ToString();
 
             return QueryAsync<ReadOnlyBook[]>(query, cancellationToken);
         }
