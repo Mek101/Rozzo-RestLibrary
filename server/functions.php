@@ -1,4 +1,5 @@
 <?php
+// funzione per la prima query
 function fumetti()
  {
 	 $cont = 0;
@@ -26,9 +27,10 @@ function fumetti()
 	 return $cont;
  }
 
+ // funzione per la seconda query
  function orderSconto()
  {
-	$str = file_get_contents('libri.json');
+	$str = file_get_contents('Libri.json');
 	$libri = json_decode($str, true);
 	
 	$str2 = file_get_contents('LibroCateg.json');
@@ -49,7 +51,6 @@ function fumetti()
 				{
 					foreach($libri["libro"] as $book)
 					{
-						//var_dump($book);
 						if($book["ID"] == $libcat["libro"])
 							array_push($queryBooks, array('sconto'=>$cat['sconto'], 'titolo'=>$book['titolo']));
 					}
@@ -60,7 +61,6 @@ function fumetti()
 	}
 	
 	
-	
 	asort($queryBooks);
 	
 	
@@ -68,7 +68,7 @@ function fumetti()
 	return $queryBooks;
  }
  
- 
+ // funzione per la terza query
  function dataarc($prima, $seconda)
  {
 	$str = file_get_contents('Libri.json');
@@ -78,21 +78,70 @@ function fumetti()
 	$data1 = new DateTime($prima);
 	$data2 = new DateTime($seconda);
 	 
+	
 	foreach($books['libro'] as $book)
 	{
 		$currentDate = new DateTime($book['dataarc']);
 		
 		if(date_diff($data1, $currentDate)->format('%R%a') > 0)
-			if ((date_diff($data1, $currentDate)->format('$R%a')) <= (date_diff($data1, $data2)->format('%R%a')))
+			if ((date_diff($data1, $currentDate)->format('%R%a')) <= (date_diff($data1, $data2)->format('%R%a')))
 				array_push($queryBooks, $book['titolo']);
 	}
 	
-	$result = "";
 	
-	foreach($queryBooks as $query)
+	return $queryBooks;
+ }
+ 
+ // funzione per la quarta query
+ function carrello($carrello)
+ {
+	$str = file_get_contents("Carrelli.JSON");
+	$carrelli = json_decode($str, true);
+	$str = file_get_contents("Libri.JSON");
+	$libri = json_decode($str, true);
+	$str = file_get_contents("LibriCarrello.JSON");
+	$libcar = json_decode($str, true);
+	$str = file_get_contents("Utenti.JSON");
+	$utenti = json_decode($str, true);
+	
+	$utenteAssociato;
+	$ncopie;
+	$query = array();
+	
+	foreach($carrelli['carrello'] as $car)
 	{
-		$result .="#".$query;
+		if($car['ID'] == $carrello)
+		{
+			
+			foreach($utenti['utente'] as $user)
+			{
+				if($user['telefono'] == $car['utente']) 
+				{
+					$utenteAssociato = $user['nome'] . " " . $user['cognome'];
+
+				}
+			}
+			foreach($libcar['libricarrello'] as $lb)
+			{
+				
+				if($lb['carrello'] == $carrello)
+				{
+					
+					$ncopie = $lb['ncopie'];
+					
+					foreach($libri['libro'] as $book)
+					{
+						if($book['ID'] == $lb['libro'])
+						{
+							array_push($query, array('libro'=>$book['titolo'], 'ncopie'=>$ncopie, 'utente' =>$utenteAssociato));
+						}
+					}
+				}
+			}
+			
+		}
 	}
-	return $result;
+	
+	return $query;
  }
 ?>

@@ -18,7 +18,6 @@
 					break;
 				case 2:
 					$books = orderSconto();
-					//$jsonBooks = json_encode($books);
 					if($books == NULL)
 						deliver_response(404,"not found", NULL);
 					else
@@ -32,6 +31,13 @@
 						deliver_response(404,"not found", NULL);
 					else
 						deliver_response(200, "success", $archivio);
+					break;
+				case 4:
+					$cart = carrello($_GET['cart']);
+					if ($cart == NULL)
+						deliver_response(404, "not found", NULL);
+					else
+						deliver_response(200, "success", $cart);
 					break;
 			}	
 	}
