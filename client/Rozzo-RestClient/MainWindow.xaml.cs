@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -19,7 +21,7 @@ namespace Rozzo_RestClient
         {
             InitializeComponent();
             InitCategory();
-            _querier = new Querier(new Uri("http://10.13.100.31/json_server/index.php"), 80);
+            _querier = new Querier("http://10.13.100.31/json_server/index.php", 80);
             _querier.OnDebuggingLog += (o, s) => Dispatcher.InvokeAsync(() => Log(s));
         }
 
@@ -32,11 +34,19 @@ namespace Rozzo_RestClient
 
         private Category GetSelectedCategory() { return (Category)cmbBox_category.SelectedIndex; }
 
-        private void PrintResponse(IReadOnlyResponse<Book[]> response)
+        private void PrintResponse<T>(IReadOnlyResponse<T[]> response)
         {
-            lstBox_output.Items.Add(response.Message);
-            foreach (Book book in response.Data)
-                lstBox_output.Items.Add(book);
+            lstBox_output.Items.Add("Response message: " + response.Message);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                Log("Response succesful.");
+
+                foreach(T item in response.Data)
+                    lstBox_output.Items.Add(item.ToString());
+            }
+            else            
+                Log("Response error code: " + response.StatusCode.ToString() + ".");            
         }
         #endregion
 
@@ -45,25 +55,25 @@ namespace Rozzo_RestClient
         private async Task GetQuantityOfIn(Category category, string repart)
         {
             IReadOnlyResponse<int> response = await _querier.QuantityOfInAsync(category, repart);
-            MessageBox.Show(response.Message + "\n" + response.Data, response.StatusCode.ToString());
+            MessageBox.Show("Respponse message: " + response.Message + "\n" + response.Data, response.StatusCode.ToString());
         }
 
         private async Task GetEnumAllCategory(Category category)
         {
-            IReadOnlyResponse<Book[]> response = await _querier.EnumerateAllCategoryAsync(category);
-            PrintResponse(response);            
+            IReadOnlyResponse<ReadOnlyBook[]> response = await _querier.EnumerateAllCategoryAsync(category);
+            PrintResponse<ReadOnlyBook>(response);
         }
 
         private async Task GetEnumDateRange(DateTime start, DateTime end)
         {
-            IReadOnlyResponse<Book[]> response = await _querier.EnumerateDateRangeAsync(start, end);
-            PrintResponse(response);
+            IReadOnlyResponse<string[]> response = await _querier.EnumerateDateRangeAsync(start, end);
+            PrintResponse<string>(response);
         }
 
         private async Task GetEnumFromCart(int cartCode)
         {
-            IReadOnlyResponse<Book[]> response = await _querier.EnumerateFromCartAsync(cartCode);
-            PrintResponse(response);
+            IReadOnlyResponse<ReadOnlyBook[]> response = await _querier.EnumerateFromCartAsync(cartCode);
+            PrintResponse<ReadOnlyBook>(response);
         }
         #endregion
 
@@ -78,13 +88,13 @@ namespace Rozzo_RestClient
             DateTime start, end;
             if (DateTime.TryParse(txtBox_startDate.Text, out start) && DateTime.TryParse(txtBox_endDate.Text, out end))
             {
-                if(start >= end)
-                    GetEnumDateRange(start, end).ConfigureAwait(true);
+                if (start <= end)                
+                    GetEnumDateRange(start, end).ConfigureAwait(false);
                 else
-                    Log("Starting date is major that the end date!");
+                    Log("Starting (" + start.ToShortDateString() + ") date is major that the end date! (" + end.ToShortDateString() + ")");
             }
             else
-                Log("Unable to parse date!");
+                Log("Client error: unable to parse date!");
         }
 
         private void btn_enumFromCart_Click(object sender, RoutedEventArgs e)
@@ -93,7 +103,7 @@ namespace Rozzo_RestClient
             if (int.TryParse(txtBox_cartCode.Text, out code))
                 GetEnumFromCart(code).ConfigureAwait(true);
             else
-                Log("unable to parse cart code!");
+                Log("Client error: unable to parse cart code!");
         }
         #endregion
     }

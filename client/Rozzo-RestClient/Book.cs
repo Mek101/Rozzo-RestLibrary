@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Rozzo_RestClient
 {
-    class Book
+    class ReadOnlyBook
     {
         [JsonProperty("ID")]
         public int ID { private set; get; }
@@ -30,7 +30,7 @@ namespace Rozzo_RestClient
         public string Author { private set; get; }
 
 
-        public Book(int id, string title, int price, int pages, DateTime publication, string repart, string author)
+        public ReadOnlyBook(int id, string title, int price, int pages, DateTime publication, string repart, string author)
         {
             ID = id;
             Title = title;
@@ -40,5 +40,7 @@ namespace Rozzo_RestClient
             Repart = repart;
             Author = author;
         }
+
+        public override string ToString() { return Title + " " + Repart + " " + Price + " " + Author; }
     }
 }

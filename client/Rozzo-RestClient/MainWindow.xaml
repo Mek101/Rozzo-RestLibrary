@@ -16,9 +16,9 @@
         <ListBox x:Name="lstBox_output" HorizontalAlignment="Left" Height="375" Margin="403,34,0,0" VerticalAlignment="Top" Width="379"/>
         <Label Content="Output" HorizontalAlignment="Left" Margin="403,3,0,0" VerticalAlignment="Top" Width="210"/>
         <Label Content="Logs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,283,0,0"/>
-        <TextBox x:Name="txtBox_startDate" HorizontalAlignment="Left" Height="23" Margin="10,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtBox_startDate" HorizontalAlignment="Left" Height="23" Margin="10,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="01-01-1998"/>
         <Label Content="Data iniziale" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="txtBox_endDate" HorizontalAlignment="Left" Height="23" Margin="135,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="txtBox_endDate" HorizontalAlignment="Left" Height="23" Margin="135,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="01-01-2001"/>
         <Label Content="Data finale" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="135,100,0,0"/>
         <Button x:Name="btn_enumDateRange" Content="3: enum date range" HorizontalAlignment="Left" Margin="10,159,0,0" VerticalAlignment="Top" Width="120" Click="btn_enumDateRange_Click"/>
         <Button x:Name="btn_enumAllCategory" Content="2: enum all category" HorizontalAlignment="Left" Margin="135,68,0,0" VerticalAlignment="Top" Width="120" Click="btn_enumAllCategory_Click"/>
