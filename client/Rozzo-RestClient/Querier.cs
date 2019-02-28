@@ -25,19 +25,23 @@ namespace Rozzo_RestClient
 
             public JsonContent(string json)
             {
-                JObject jObject = JObject.Parse(json);
+                JObject jObject = null;
 
-                if (json.Contains(STATUS))                
+                // Attemps to parse the string to json.
+                try { jObject = JObject.Parse(json); }
+                catch (Exception) { }
+
+                if (jObject != null && json.Contains(STATUS))                
                     StatusCode = (HttpStatusCode)jObject[STATUS].ToObject<int>();
                 else                
                     StatusCode = HttpStatusCode.InternalServerError;                
 
-                if (json.Contains(STATUS_MESSAGE))
+                if (jObject != null && json.Contains(STATUS_MESSAGE))
                     Message = jObject[STATUS_MESSAGE].ToObject<string>();
                 else
                     Message = string.Empty;
 
-                if (json.Contains(DATA) && StatusCode == HttpStatusCode.OK)
+                if (jObject != null && json.Contains(DATA) && StatusCode == HttpStatusCode.OK)
                     Data = jObject[DATA].ToObject<TData>();
                 else
                     Data = default(TData);
@@ -86,6 +90,8 @@ namespace Rozzo_RestClient
 
         private string GetServiceName(Service service) { return "name=" + ((byte)service).ToString(); }
 
+        private string GetCategory(Category category) { return "&category=" + category.ToString(); }
+
         private string FormatDate(DateTime date)
         {
             DateTime universalDate = date.ToUniversalTime();
@@ -127,7 +133,7 @@ namespace Rozzo_RestClient
         /// <returns>The number of books.</returns>
         public Task<IReadOnlyResponse<int>> QuantityOfInAsync(Category category, string repart, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string query = GetServiceName(Service.QuantityOfIn) + "&category=" + category.ToString() + "&repart=" + repart;
+            string query = GetServiceName(Service.QuantityOfIn) + GetCategory(category) + "&repart=" + repart;
 
             return QueryAsync<int>(query, cancellationToken);
         }
@@ -141,7 +147,7 @@ namespace Rozzo_RestClient
         /// <returns>All the books in the category.</returns>
         public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateAllCategoryAsync(Category category, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string query = GetServiceName(Service.EnumAllCatagory) + "&category=" + category.ToString();
+            string query = GetServiceName(Service.EnumAllCatagory) + GetCategory(category);
 
             return QueryAsync<ReadOnlyBook[]>(query, cancellationToken);
         }

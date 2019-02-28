@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
@@ -40,8 +41,9 @@ namespace Rozzo_RestClient
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 Log("Response succesful.");
-                foreach(T book in response.Data)
-                    lstBox_output.Items.Add(book);
+
+                foreach(T item in response.Data)
+                    lstBox_output.Items.Add(item.ToString());
             }
             else            
                 Log("Response error code: " + response.StatusCode.ToString() + ".");            
