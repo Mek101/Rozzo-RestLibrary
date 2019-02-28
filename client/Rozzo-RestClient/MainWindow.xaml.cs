@@ -33,14 +33,14 @@ namespace Rozzo_RestClient
 
         private Category GetSelectedCategory() { return (Category)cmbBox_category.SelectedIndex; }
 
-        private void PrintResponse(IReadOnlyResponse<ReadOnlyBook[]> response)
+        private void PrintResponse<T>(IReadOnlyResponse<T[]> response)
         {
             lstBox_output.Items.Add("Response message: " + response.Message);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 Log("Response succesful.");
-                foreach (ReadOnlyBook book in response.Data)
+                foreach(T book in response.Data)
                     lstBox_output.Items.Add(book);
             }
             else            
@@ -59,19 +59,19 @@ namespace Rozzo_RestClient
         private async Task GetEnumAllCategory(Category category)
         {
             IReadOnlyResponse<ReadOnlyBook[]> response = await _querier.EnumerateAllCategoryAsync(category);
-            PrintResponse(response);            
+            PrintResponse<ReadOnlyBook>(response);
         }
 
         private async Task GetEnumDateRange(DateTime start, DateTime end)
         {
-            IReadOnlyResponse<ReadOnlyBook[]> response = await _querier.EnumerateDateRangeAsync(start, end);
-            PrintResponse(response);
+            IReadOnlyResponse<string[]> response = await _querier.EnumerateDateRangeAsync(start, end);
+            PrintResponse<string>(response);
         }
 
         private async Task GetEnumFromCart(int cartCode)
         {
             IReadOnlyResponse<ReadOnlyBook[]> response = await _querier.EnumerateFromCartAsync(cartCode);
-            PrintResponse(response);
+            PrintResponse<ReadOnlyBook>(response);
         }
         #endregion
 
@@ -86,8 +86,8 @@ namespace Rozzo_RestClient
             DateTime start, end;
             if (DateTime.TryParse(txtBox_startDate.Text, out start) && DateTime.TryParse(txtBox_endDate.Text, out end))
             {
-                if(start <= end)
-                    GetEnumDateRange(start, end).ConfigureAwait(true);
+                if (start <= end)                
+                    GetEnumDateRange(start, end).ConfigureAwait(false);
                 else
                     Log("Starting (" + start.ToShortDateString() + ") date is major that the end date! (" + end.ToShortDateString() + ")");
             }

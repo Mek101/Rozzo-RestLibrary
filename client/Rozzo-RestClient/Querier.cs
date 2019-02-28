@@ -48,6 +48,9 @@ namespace Rozzo_RestClient
         protected UriBuilder _remoteUrlBuilder;
         protected static HttpClient _client;
 
+        /// <summary>
+        /// Raised when a method outputs a log message.
+        /// </summary>
         public event EventHandler<string> OnDebuggingLog;
         #endregion
 
@@ -83,6 +86,13 @@ namespace Rozzo_RestClient
 
         private string GetServiceName(Service service) { return "name=" + ((byte)service).ToString(); }
 
+        private string FormatDate(DateTime date)
+        {
+            DateTime universalDate = date.ToUniversalTime();
+
+            return universalDate.Year + "-" + universalDate.Month + "-" + universalDate.Day;
+        }
+
 
         private async Task<IReadOnlyResponse<T>> QueryAsync<T>(string query, CancellationToken cancellationToken)
         {
@@ -90,7 +100,7 @@ namespace Rozzo_RestClient
             _remoteUrlBuilder.Query = query;
             Uri targetUrl = _remoteUrlBuilder.Uri;
 
-            Log("Targeting uri: " + targetUrl.ToString());
+            Log("Target uri: " + targetUrl.ToString());
 
             using(HttpResponseMessage httpResponse = await _client.GetAsync(targetUrl, cancellationToken))
             {
@@ -108,6 +118,13 @@ namespace Rozzo_RestClient
 
 
         #region Public interface
+        /// <summary>
+        /// Returns the number of books of a given category in a given repart.
+        /// </summary>
+        /// <param name="category">The book category.</param>
+        /// <param name="repart">The book repart.</param>
+        /// <param name="cancellationToken">Token to cancel the query.</param>
+        /// <returns>The number of books.</returns>
         public Task<IReadOnlyResponse<int>> QuantityOfInAsync(Category category, string repart, CancellationToken cancellationToken = default(CancellationToken))
         {
             string query = GetServiceName(Service.QuantityOfIn) + "&category=" + category.ToString() + "&repart=" + repart;
@@ -115,6 +132,13 @@ namespace Rozzo_RestClient
             return QueryAsync<int>(query, cancellationToken);
         }
 
+
+        /// <summary>
+        /// Enumerates all the books in a given category.
+        /// </summary>
+        /// <param name="category">The books category.</param>
+        /// <param name="cancellationToken">Token to cancel the query.</param>
+        /// <returns>All the books in the category.</returns>
         public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateAllCategoryAsync(Category category, CancellationToken cancellationToken = default(CancellationToken))
         {
             string query = GetServiceName(Service.EnumAllCatagory) + "&category=" + category.ToString();
@@ -122,13 +146,28 @@ namespace Rozzo_RestClient
             return QueryAsync<ReadOnlyBook[]>(query, cancellationToken);
         }
 
-        public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateDateRangeAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            string query = GetServiceName(Service.EnumDateRange) + "&start=" + start.ToUniversalTime().ToShortDateString() + "&end=" + end.ToUniversalTime().ToShortDateString();
 
-            return QueryAsync<ReadOnlyBook[]>(query, cancellationToken);
+        /// <summary>
+        /// Get the titles of all books withing the given range of time.
+        /// </summary>
+        /// <param name="start">The range starting date.</param>
+        /// <param name="end">The range end date.</param>
+        /// <param name="cancellationToken">Token to cancel the query.</param>
+        /// <returns>The titles of the books.</returns>
+        public Task<IReadOnlyResponse<string[]>> EnumerateDateRangeAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            string query = GetServiceName(Service.EnumDateRange) + "&start=" + FormatDate(start) + "&end=" + FormatDate(end);
+
+            return QueryAsync<string[]>(query, cancellationToken);
         }
 
+
+        /// <summary>
+        /// Enumerates all the books in the given cart.
+        /// </summary>
+        /// <param name="cartCode">The target cart code.</param>
+        /// <param name="cancellationToken">Token to cancel the query.</param>
+        /// <returns>All the books in the cart.</returns>
         public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateFromCartAsync(int cartCode, CancellationToken cancellationToken = default(CancellationToken))
         {
             string query = GetServiceName(Service.EnumFromCart) + "&cart_code=" + cartCode.ToString();
