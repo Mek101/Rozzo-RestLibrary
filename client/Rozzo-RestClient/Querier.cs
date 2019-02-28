@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 
@@ -26,18 +27,21 @@ namespace Rozzo_RestClient
             public JsonContent(string json)
             {
                 JObject jObject = null;
+                string parseError = null;
 
                 // Attemps to parse the string to json.
                 try { jObject = JObject.Parse(json); }
-                catch (Exception) { }
+                catch (Exception e) { parseError = e.Message; }
 
-                if (jObject != null && json.Contains(STATUS))                
+                if(jObject != null && json.Contains(STATUS))                
                     StatusCode = (HttpStatusCode)jObject[STATUS].ToObject<int>();
                 else                
-                    StatusCode = HttpStatusCode.InternalServerError;                
+                    StatusCode = HttpStatusCode.InternalServerError;
 
                 if (jObject != null && json.Contains(STATUS_MESSAGE))
                     Message = jObject[STATUS_MESSAGE].ToObject<string>();
+                else if (!string.IsNullOrEmpty(parseError))
+                    Message = parseError;
                 else
                     Message = string.Empty;
 
