@@ -80,6 +80,10 @@ namespace Rozzo_RestClient
                 OnDebuggingLog(this, log);
         }
 
+
+        private string GetServiceName(Service service) { return "name=" + ((byte)service).ToString(); }
+
+
         private async Task<IReadOnlyResponse<T>> QueryAsync<T>(string query, CancellationToken cancellationToken)
         {
             // Re-assigns the query statement.
@@ -106,28 +110,28 @@ namespace Rozzo_RestClient
         #region Public interface
         public Task<IReadOnlyResponse<int>> QuantityOfInAsync(Category category, string repart, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string query = "name=" + ((byte)Service.QuantityOfIn).ToString() + "&category=" + category.ToString() + "&repart=" + repart;
+            string query = GetServiceName(Service.QuantityOfIn) + "&category=" + category.ToString() + "&repart=" + repart;
 
             return QueryAsync<int>(query, cancellationToken);
         }
 
         public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateAllCategoryAsync(Category category, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string query = "name=" + ((byte)Service.EnumAllCatagory).ToString() + "&category=" + category.ToString();
+            string query = GetServiceName(Service.EnumAllCatagory) + "&category=" + category.ToString();
 
             return QueryAsync<ReadOnlyBook[]>(query, cancellationToken);
         }
 
         public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateDateRangeAsync(DateTime start, DateTime end, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string query = "name=" + ((byte)Service.EnumDateRange).ToString() + "&start=" + start.ToUniversalTime().ToShortTimeString() + "&end=" + end.ToUniversalTime().ToShortTimeString();
+            string query = GetServiceName(Service.EnumDateRange) + "&start=" + start.ToUniversalTime().ToShortDateString() + "&end=" + end.ToUniversalTime().ToShortDateString();
 
             return QueryAsync<ReadOnlyBook[]>(query, cancellationToken);
         }
 
         public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateFromCartAsync(int cartCode, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string query = "name=" + ((byte)Service.EnumFromCart).ToString() + "&cart_code=" + cartCode.ToString();
+            string query = GetServiceName(Service.EnumFromCart) + "&cart_code=" + cartCode.ToString();
 
             return QueryAsync<ReadOnlyBook[]>(query, cancellationToken);
         }
