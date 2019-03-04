@@ -5,26 +5,30 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Rozzo_RestClient"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="864">
     <Grid>
-        <ComboBox x:Name="cmbBox_category" HorizontalAlignment="Left" Margin="135,41,0,0" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Reparto" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <Label Content="Categoria" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="435*"/>
+            <ColumnDefinition Width="421*"/>
+        </Grid.ColumnDefinitions>
+        <ComboBox x:Name="cmbBox_category" HorizontalAlignment="Left" Margin="135,41,0,0" VerticalAlignment="Top" Width="120" Height="22"/>
+        <Label Content="Reparto" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="26" Width="52"/>
+        <Label Content="Categoria" HorizontalAlignment="Left" Margin="135,10,0,0" VerticalAlignment="Top" Height="26" Width="61"/>
         <TextBox x:Name="txtBox_repart" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="btn_quantityOfIn" Content="1: quantity of in" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top" Width="120" Click="btn_quantityOfIn_Click"/>
-        <ListBox x:Name="lstBox_log" HorizontalAlignment="Left" Height="85" Margin="10,324,0,0" VerticalAlignment="Top" Width="388"/>
-        <ListBox x:Name="lstBox_output" HorizontalAlignment="Left" Height="375" Margin="403,34,0,0" VerticalAlignment="Top" Width="379"/>
-        <Label Content="Output" HorizontalAlignment="Left" Margin="403,3,0,0" VerticalAlignment="Top" Width="210"/>
-        <Label Content="Logs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,283,0,0"/>
+        <Button x:Name="btn_quantityOfIn" Content="1: quantity of in" HorizontalAlignment="Left" Margin="10,69,0,0" VerticalAlignment="Top" Width="120" Click="btn_quantityOfIn_Click" Height="20"/>
+        <ListBox x:Name="lstBox_log" Height="85" Margin="10,0,10,10" VerticalAlignment="Bottom"/>
+        <ListBox x:Name="lstBox_output" HorizontalAlignment="Left" Height="375" Margin="10,34,0,0" VerticalAlignment="Top" Width="401" Grid.Column="1"/>
+        <Label Content="Output" HorizontalAlignment="Left" Margin="15,3,0,0" VerticalAlignment="Top" Width="210" Grid.Column="1" Height="26"/>
+        <Label Content="Logs" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,283,0,0" Height="26" Width="35"/>
         <TextBox x:Name="txtBox_startDate" HorizontalAlignment="Left" Height="23" Margin="10,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="01-01-1998"/>
-        <Label Content="Data iniziale" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top"/>
+        <Label Content="Data iniziale" HorizontalAlignment="Left" Margin="10,100,0,0" VerticalAlignment="Top" Height="26" Width="74"/>
         <TextBox x:Name="txtBox_endDate" HorizontalAlignment="Left" Height="23" Margin="135,131,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Text="01-01-2001"/>
-        <Label Content="Data finale" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="135,100,0,0"/>
-        <Button x:Name="btn_enumDateRange" Content="3: enum date range" HorizontalAlignment="Left" Margin="10,159,0,0" VerticalAlignment="Top" Width="120" Click="btn_enumDateRange_Click"/>
-        <Button x:Name="btn_enumAllCategory" Content="2: enum all category" HorizontalAlignment="Left" Margin="135,68,0,0" VerticalAlignment="Top" Width="120" Click="btn_enumAllCategory_Click"/>
+        <Label Content="Data finale" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="135,100,0,0" Height="26" Width="67"/>
+        <Button x:Name="btn_enumDateRange" Content="3: enum date range" HorizontalAlignment="Left" Margin="10,159,0,0" VerticalAlignment="Top" Width="120" Click="btn_enumDateRange_Click" Height="20"/>
+        <Button x:Name="btn_enumAllCategory" Content="2: enum all category" HorizontalAlignment="Left" Margin="135,68,0,0" VerticalAlignment="Top" Width="120" Click="btn_enumAllCategory_Click" Height="20"/>
         <TextBox x:Name="txtBox_cartCode" HorizontalAlignment="Left" Height="23" Margin="10,225,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
-        <Label Content="Cart code" HorizontalAlignment="Left" Margin="10,194,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="btn_enumFromCart" Content="4: enum from cart" HorizontalAlignment="Left" Margin="10,253,0,0" VerticalAlignment="Top" Width="120" Click="btn_enumFromCart_Click"/>
+        <Label Content="Cart code" HorizontalAlignment="Left" Margin="10,194,0,0" VerticalAlignment="Top" Height="26" Width="61"/>
+        <Button x:Name="btn_enumFromCart" Content="4: enum from cart" HorizontalAlignment="Left" Margin="10,253,0,0" VerticalAlignment="Top" Width="120" Click="btn_enumFromCart_Click" Height="20"/>
 
     </Grid>
 </Window>

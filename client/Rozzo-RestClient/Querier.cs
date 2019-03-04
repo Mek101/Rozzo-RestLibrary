@@ -76,6 +76,8 @@ namespace Rozzo_RestClient
             _remoteUrlBuilder = builder;
         }
 
+        ~Querier() { OnDebuggingLog = null; }
+
         public Querier(string remoteUrl) : this(new UriBuilder(remoteUrl)) { }
 
         public Querier(Uri remoteUrl) : this(new UriBuilder(remoteUrl)) { }
@@ -178,11 +180,11 @@ namespace Rozzo_RestClient
         /// <param name="cartCode">The target cart code.</param>
         /// <param name="cancellationToken">Token to cancel the query.</param>
         /// <returns>All the books in the cart.</returns>
-        public Task<IReadOnlyResponse<ReadOnlyBook[]>> EnumerateFromCartAsync(int cartCode, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<IReadOnlyResponse<BookWithUser[]>> EnumerateFromCartAsync(int cartCode, CancellationToken cancellationToken = default(CancellationToken))
         {
-            string query = GetServiceName(Service.EnumFromCart) + "&cart_code=" + cartCode.ToString();
+            string query = GetServiceName(Service.EnumFromCart) + "&cart=" + cartCode.ToString();
 
-            return QueryAsync<ReadOnlyBook[]>(query, cancellationToken);
+            return QueryAsync<BookWithUser[]>(query, cancellationToken);
         }
         #endregion
     }

@@ -43,4 +43,16 @@ namespace Rozzo_RestClient
 
         public override string ToString() { return Title + " " + Repart + " " + Price + " " + Author; }
     }
+
+
+    class BookWithUser : ReadOnlyBook
+    {
+        public BookWithUser(int id, string title, int price, int pages, DateTime publication, string repart, string author, string user) : base(id, title, price, pages, publication, repart, author)
+        {
+            User = user;
+        }
+
+        [JsonProperty("utente")]
+        public string User { private set; get; }
+    }
 }
