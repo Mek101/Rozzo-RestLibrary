@@ -1,62 +1,79 @@
 <?php
 // process client request (via URL)
-	header ("Content-Type_application/json");
-	include ("functions.php");
-	if(!empty($_GET['name'])){
-			$name=$_GET['name'];
-			
-			switch($name){
-				case 1:
-					$cont = fumetti();
-					if($cont == 0)
-						deliver_response(404,"not found", NULL);
-					else
-					{
-						deliver_response(200, 'success', $cont);
-					}
-					
-					break;
-				case 2:
-					$books = orderSconto();
-					if($books == NULL)
-						deliver_response(404,"not found", NULL);
-					else
-						deliver_response(200,"success", $books);
-					
-					break;
-				case 3:
-					
-					$archivio = dataarc($_GET['start'], $_GET['end']);
-					if($archivio == NULL)
-						deliver_response(404,"not found", NULL);
-					else
-						deliver_response(200, "success", $archivio);
-					break;
-				case 4:
-					$cart = carrello($_GET['cart']);
-					if ($cart == NULL)
-						deliver_response(404, "not found", NULL);
-					else
-						deliver_response(200, "success", $cart);
-					break;
-			}	
+	header("Content-Type_application/json");
+	include("functions.php");
+
+	const METHOD_CODE = 'name';
+	const CATEGORY = 'category';
+	const START_DATE = 'start';
+	const END_DATE = 'end';
+
+	if(isset($_GET[]) && !empty($_GET[METHOD_CODE])){
+		$name=$_GET[METHOD_CODE];
+		
+		switch($name){
+			case 1:
+				$cont = NULL;
+				
+				if(isset($_GET[CATEGORY]))
+					$cont = getRepart($_GET[CATEGORY]);
+
+				if($cont === NULL)
+					deliverNotFound();
+				else					
+					deliverSuccess($count);					
+				break;
+
+			case 2:
+				$books = orderSconto();
+				if($books === NULL)
+					deliverNotFound();
+				else
+					deliverSuccess($books);				
+				break;
+
+			case 3:
+				$archive = NULL;
+
+				if(isset($_GET[START_DATE]) && isset($_GET[END_DATE])
+					$archive = dataarc($_GET[START_DATE], $_GET[END_DATE]);
+
+				if($archive === NULL)
+					deliverNotFound();
+				else
+					deliverSuccess($archive);
+				break;
+
+			case 4:
+				$cart = getCart($_GET['cart']);
+				if ($cart === NULL)
+					deliverNotFound();
+				else
+					deliverSuccess($cart);
+				break;
+		}
 	}
-	else
-	{
-		//throw invalid request
-		deliver_response(400,"Invalid request", NULL);
-	}
+	else	
+		// Deliver an invalid request
+		deliverResponse(400, "Invalid request", NULL);
 	
-	function deliver_response($status, $status_message, $data)
-	{
+	function deliverNotFound() {
+		deliverResponse(404, "not found", NULL);
+	}
+
+	function deliverSuccess($data) {
+		deliverResponse(200, "success", $data)
+	}
+
+	function deliverResponse($status, $status_message, $data) {
 		header("HTTP/1.1 $status $status_message");
 		
-		$response ['status']=$status;
-		$response['status_message']=$status_message;
-		$response['data']=$data;
+		$response['status'] = $status;
+		$response['status_message'] = $status_message;
+		$response['data'] = $data;
 		
-		$json_response=json_encode($response);
-		echo $json_response;
+		$json_response = json_encode($response);
+		echo($json_response);
 	}
 
 ?>
