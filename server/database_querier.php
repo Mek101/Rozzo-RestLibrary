@@ -8,7 +8,7 @@
 		}
 		
 		
-		public function getRepart(string £repart) : int {
+		public function getRepart(string $repart) : int {
 		
 		}
 	}
