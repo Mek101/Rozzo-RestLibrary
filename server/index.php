@@ -54,6 +54,10 @@
 				else
 					deliverSuccess($cart);
 				break;
+			
+			default:
+				deliverInvalidRequest();
+				break;
 		}
 	}
 	else	
