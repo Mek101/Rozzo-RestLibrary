@@ -3,13 +3,14 @@
 	header("Content-Type_application/json");
 	include("database_querier.php");
 
-	const METHOD_CODE = 'name';
+	const METHOD_INDEX = 'name';
 	const CATEGORY = 'category';
 	const START_DATE = 'start';
 	const END_DATE = 'end';
+	const CART_INDEX = 'cart';
 
-	if(isset($_GET[]) && !empty($_GET[METHOD_CODE])) {
-		$name=$_GET[METHOD_CODE];
+	if(isset($_GET[METHOD_INDEX]) && !empty($_GET[METHOD_INDEX])) {
+		$name=$_GET[METHOD_INDEX];
 
 		$querier = new Querier("localhost", "rozzolibrarydb", "root", ""):
 		
@@ -47,7 +48,10 @@
 				break;
 
 			case 4:
-				$cart = $querier->getCart($_GET['cart']);
+				$cart = NULL;
+				
+				if(isset($_GET[CART_INDEX]))
+					$cart = $querier->getCart($_GET[CART_INDEX]);
 
 				if ($cart === NULL)
 					deliverNotFound();
