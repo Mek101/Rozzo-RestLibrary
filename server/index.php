@@ -1,31 +1,33 @@
 <?php
-// process client request (via URL)
+	// process client request (via URL)
 	header("Content-Type_application/json");
-	include("functions.php");
+	include("database_querier.php");
 
 	const METHOD_CODE = 'name';
 	const CATEGORY = 'category';
 	const START_DATE = 'start';
 	const END_DATE = 'end';
 
-	if(isset($_GET[]) && !empty($_GET[METHOD_CODE])){
+	if(isset($_GET[]) && !empty($_GET[METHOD_CODE])) {
 		$name=$_GET[METHOD_CODE];
+
+		$querier = new Querier("localhost", "rozzolibrarydb", "root", ""):
 		
-		switch($name){
+		switch($name) {
 			case 1:
 				$cont = NULL;
 				
 				if(isset($_GET[CATEGORY]))
-					$cont = getRepart($_GET[CATEGORY]);
+					$cont = $querier->getRepart($_GET[CATEGORY]);
 
 				if($cont === NULL)
-					deliverNotFound();
+					deliverInvalidRequest();
 				else					
 					deliverSuccess($count);					
 				break;
 
 			case 2:
-				$books = orderSconto();
+				$books = $querier->orderSconto();
 				if($books === NULL)
 					deliverNotFound();
 				else
@@ -36,7 +38,7 @@
 				$archive = NULL;
 
 				if(isset($_GET[START_DATE]) && isset($_GET[END_DATE])
-					$archive = dataarc($_GET[START_DATE], $_GET[END_DATE]);
+					$archive = $querier->dataarc($_GET[START_DATE], $_GET[END_DATE]);
 
 				if($archive === NULL)
 					deliverNotFound();
@@ -45,7 +47,8 @@
 				break;
 
 			case 4:
-				$cart = getCart($_GET['cart']);
+				$cart = $querier->getCart($_GET['cart']);
+
 				if ($cart === NULL)
 					deliverNotFound();
 				else
@@ -55,8 +58,12 @@
 	}
 	else	
 		// Deliver an invalid request
-		deliverResponse(400, "Invalid request", NULL);
+		deliverInvalidRequest();
 	
+	function deliverInvalidRequest() {
+		deliverResponse(400, "Invalid request", NULL);
+	}
+
 	function deliverNotFound() {
 		deliverResponse(404, "not found", NULL);
 	}

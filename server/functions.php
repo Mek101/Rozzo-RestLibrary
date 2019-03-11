@@ -17,7 +17,7 @@ function getRepart(string $repart) {
 }
 
 // funzione per la seconda query
-function orderSconto() {
+function orderSconto() : array {
 	$str = file_get_contents('Libri.json');
 	$libri = json_decode($str, true);
 
@@ -43,7 +43,7 @@ function orderSconto() {
 }
  
 // funzione per la terza query
-function dataarc($prima, $seconda) {
+function dataarc($prima, $seconda) : array {
 	$str = file_get_contents('Libri.json');
 	$books = json_decode($str, true);
 		
@@ -63,7 +63,7 @@ function dataarc($prima, $seconda) {
 }
  
 // funzione per la quarta query
-function getCart($cart) {
+function getCart($cart) : array {
 	$str = file_get_contents("Carrelli.JSON");
 	$carrelli = json_decode($str, true);
 	$str = file_get_contents("Libri.JSON");
