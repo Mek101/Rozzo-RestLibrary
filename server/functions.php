@@ -82,7 +82,7 @@ function getCart($cart) {
 
 			// Extracting user	
 			foreach($utenti['utente'] as $serializedUser)			
-				if($serializedUser['ID'] === $serializedCart['utente']) {
+				if($serializedUser['telefono'] === $serializedCart['utente']) {
 					$extractedUser = $serializedUser['nome'] . " " . $serializedUser['cognome'];
 					break;
 				}
