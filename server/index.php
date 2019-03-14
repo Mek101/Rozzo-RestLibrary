@@ -10,74 +10,71 @@
 	const CART_INDEX = 'cart';
 
 	if(isset($_GET[METHOD_INDEX]) && !empty($_GET[METHOD_INDEX])) {
-		$name=$_GET[METHOD_INDEX];
+		try {
+			$name = $_GET[METHOD_INDEX];
 
-		$querier = new Querier("localhost", "rozzolibrarydb", "root", ""):
-		
-		switch($name) {
-			case 1:
-				$cont = NULL;
-				
-				if(isset($_GET[CATEGORY]))
-					$cont = $querier->getRepart($_GET[CATEGORY]);
-
-				if($cont === NULL)
-					deliverInvalidRequest();
-				else					
-					deliverSuccess($count);					
-				break;
-
-			case 2:
-				$books = $querier->orderByDiscount();
-				if($books === NULL)
-					deliverNotFound();
-				else
-					deliverSuccess($books);				
-				break;
-
-			case 3:
-				$archive = NULL;
-
-				if(isset($_GET[START_DATE]) && isset($_GET[END_DATE])
-					$archive = $querier->getBetweenDates($_GET[START_DATE], $_GET[END_DATE]);
-
-				if($archive === NULL)
-					deliverNotFound();
-				else
-					deliverSuccess($archive);
-				break;
-
-			case 4:
-				$cart = NULL;
-				
-				if(isset($_GET[CART_INDEX]))
-					$cart = $querier->getCart($_GET[CART_INDEX]);
-
-				if ($cart === NULL)
-					deliverNotFound();
-				else
-					deliverSuccess($cart);
-				break;
+			$querier = new Querier("localhost", "rozzolibrarydb", "root", ""):
 			
-			default:
-				deliverInvalidRequest();
-				break;
+			switch($name) {
+				case 1:				
+					if(isset($_GET[CATEGORY]))
+						$deliverSuccess($querier->getRepart($_GET[CATEGORY]));
+					else
+						deliverInvalidRequest("Category missing.");
+					break;
+
+				case 2:
+					$books = $querier->orderByDiscount();
+					if($books === NULL)
+						deliverNotFound();
+					else
+						deliverSuccess($books);				
+					break;
+
+				case 3:
+					if(isset($_GET[START_DATE]) && isset($_GET[END_DATE])
+						deliverSuccess($querier->getBetweenDates($_GET[START_DATE], $_GET[END_DATE]));
+					else
+						deliverInvalidRequest();
+					break;
+				case 4:				
+					if(isset($_GET[CART_INDEX]))
+						deliverSuccess($querier->getCart($_GET[CART_INDEX]));
+					else
+						deliverInvalidRequest();
+					break;			
+				default:
+					deliverInvalidRequest();
+					break;
+			}
+		}
+		catch(Exception e) {
+			deliverServerError(e->getMessage());
 		}
 	}
 	else	
 		// Deliver an invalid request
-		deliverInvalidRequest();
+		deliverInvalidRequest("$name is not a recognized method.");
 	
-	function deliverInvalidRequest() {
-		deliverResponse(400, "Invalid request", NULL);
+	function deliverInvalidRequest(string $error = "") {
+		$message = "Invalid request";
+		
+		if($error !== "")
+			$message .= "\n" . $error;
+
+		deliverResponse(400, $message, NULL);
 	}
 
 	function deliverNotFound() {
-		deliverResponse(404, "not found", NULL);
+		deliverResponse(404, "Not found", NULL);
 	}
 
 	function deliverSuccess($data) {
-		deliverResponse(200, "success", $data)
+		deliverResponse(200, "Success", $data)
+	}
+
+	function deliverServerError(string $error) {
+		deliverResponse(500, "Internal error:\n$error");
 	}
 
 	function deliverResponse($status, $status_message, $data) {

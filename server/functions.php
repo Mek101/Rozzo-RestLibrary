@@ -4,15 +4,12 @@
 	// funzione per la prima query
 	function getRepart(string $repart) {
 		$cont = 0;
-		$str = file_get_contents('libri.json');
-		$libri = json_decode($str, true);
+		$books = json_decode(file_get_contents('libri.json'), true);
+		$booksCat = json_decode(file_get_contents('LibroCateg.json'), true);
 		
-		$str2 = file_get_contents('LibroCateg.json');
-		$libricat = json_decode($str2, true);
-		
-		foreach($libri["libro"] as $book)
+		foreach($books["libro"] as $book)
 			if($book["reparto"] === $repart)
-				foreach($libricat["librocat"] as $bookCat)
+				foreach($booksCat["librocat"] as $bookCat)
 					if($bookCat["libro"] == $book["ID"] && $bookCat["categoria"]== "Ultimi arrivi") 
 						$cont++;
 		
@@ -41,7 +38,7 @@
 	}
 	
 	// funzione per la terza query
-	function dataarc(string $start, string $end) : array {
+	function getBetweenDates(string $start, string $end) : array {
 		$str = file_get_contents('Libri.json');
 		$books = json_decode($str, true);
 			
