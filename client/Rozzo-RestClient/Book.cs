@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Rozzo_RestClient
@@ -45,14 +46,29 @@ namespace Rozzo_RestClient
     }
 
 
-    class BookWithUser : ReadOnlyBook
+    class BookWithUser
     {
-        public BookWithUser(int id, string title, int price, int pages, DateTime publication, string repart, string author, string user) : base(id, title, price, pages, publication, repart, author)
+        public BookWithUser(string user, ReadOnlyBook[] books)
         {
             User = user;
+            Books = books;
         }
 
         [JsonProperty("utente")]
         public string User { private set; get; }
+
+        [JsonProperty("books")]
+        public ReadOnlyBook[] Books { private set; get; }
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+
+            builder.AppendLine(User);
+            foreach (ReadOnlyBook book in Books)
+                builder.AppendLine(book.ToString());
+
+            return builder.ToString();
+        }
     }
 }
