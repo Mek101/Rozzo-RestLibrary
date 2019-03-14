@@ -62,7 +62,7 @@
 	}
 
 	function deliverSuccess($data) {
-		deliverResponse(200, "success", $data)
+		deliverResponse(200, "success", $data);
 	}
 
 	function deliverResponse($status, $status_message, $data) {
