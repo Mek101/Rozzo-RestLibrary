@@ -31,7 +31,7 @@ namespace Rozzo_RestClient
 
                 // Attemps to parse the string to json.
                 try { jObject = JObject.Parse(json); }
-                catch (Exception e) { parseError = e.Message; }
+                catch (Exception e) { parseError += "\n" + e.Message; }
 
                 if(jObject != null && json.Contains(STATUS))                
                     StatusCode = (HttpStatusCode)jObject[STATUS].ToObject<int>();
@@ -41,9 +41,7 @@ namespace Rozzo_RestClient
                 if (jObject != null && json.Contains(STATUS_MESSAGE))
                     Message = jObject[STATUS_MESSAGE].ToObject<string>();
                 else if (!string.IsNullOrEmpty(parseError))
-                    Message = parseError;
-                else
-                    Message = string.Empty;
+                    Message += "\n" + parseError;
 
                 if (jObject != null && json.Contains(DATA) && StatusCode == HttpStatusCode.OK)
                     Data = jObject[DATA].ToObject<TData>();
