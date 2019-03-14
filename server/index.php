@@ -9,6 +9,40 @@
 	const END_DATE = 'end';
 	const CART_INDEX = 'cart';
 
+	function deliverInvalidRequest(string $error = "") {
+		$message = "Invalid request";
+		
+		if($error !== "")
+			$message .= ":\n" . $error;
+
+		deliverResponse(400, $message, NULL);
+	}
+
+	function deliverNotFound() {
+		deliverResponse(404, "Not found", NULL);
+	}
+
+	function deliverSuccess($data) {
+		deliverResponse(200, "Success", $data);
+	}
+
+	function deliverServerError(string $error) {
+		deliverResponse(500, "Internal error:\n$error");
+	}
+
+	function deliverResponse($status, $statusMessage, $data) {
+		header("HTTP/1.1 $status $status_message");
+		
+		$response['status'] = $status;
+		$response['message'] = $statusMessage;
+		$response['data'] = $data;
+		
+		$json_response = json_encode($response);
+		echo($json_response);
+	}
+
+
+
 	if(isset($_GET[METHOD_INDEX]) && !empty($_GET[METHOD_INDEX])) {
 		try {
 			$name = $_GET[METHOD_INDEX];
@@ -55,37 +89,4 @@
 	else	
 		// Deliver an invalid request
 		deliverInvalidRequest("$name is not a recognized method.");
-	
-	function deliverInvalidRequest(string $error = "") {
-		$message = "Invalid request";
-		
-		if($error !== "")
-			$message .= "\n" . $error;
-
-		deliverResponse(400, $message, NULL);
-	}
-
-	function deliverNotFound() {
-		deliverResponse(404, "Not found", NULL);
-	}
-
-	function deliverSuccess($data) {
-		deliverResponse(200, "Success", $data);
-	}
-
-	function deliverServerError(string $error) {
-		deliverResponse(500, "Internal error:\n$error");
-	}
-
-	function deliverResponse($status, $status_message, $data) {
-		header("HTTP/1.1 $status $status_message");
-		
-		$response['status'] = $status;
-		$response['status_message'] = $status_message;
-		$response['data'] = $data;
-		
-		$json_response = json_encode($response);
-		echo($json_response);
-	}
-
 ?>

@@ -17,7 +17,7 @@ namespace Rozzo_RestClient
         protected sealed class JsonContent<TData> : IReadOnlyResponse<TData>
         {
             private const string STATUS = "status";
-            private const string STATUS_MESSAGE = "status_message";
+            private const string STATUS_MESSAGE = "message";
             private const string DATA = "data";
 
             public HttpStatusCode StatusCode { private set; get; }
