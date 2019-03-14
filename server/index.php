@@ -70,7 +70,7 @@
 	}
 
 	function deliverSuccess($data) {
-		deliverResponse(200, "Success", $data)
+		deliverResponse(200, "Success", $data);
 	}
 
 	function deliverServerError(string $error) {
