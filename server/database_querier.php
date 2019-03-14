@@ -11,5 +11,17 @@
 		public function getRepart(string $repart) : int {
 		
 		}
+
+		public function orderByDiscount() : array {
+
+		}
+
+		public function getBetweenDates(string $start, string $end ) : array {
+
+		}
+
+		public function getCart() : array {
+			
+		}
 	}
 ?>

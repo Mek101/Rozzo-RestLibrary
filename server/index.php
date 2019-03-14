@@ -28,7 +28,7 @@
 				break;
 
 			case 2:
-				$books = $querier->orderSconto();
+				$books = $querier->orderByDiscount();
 				if($books === NULL)
 					deliverNotFound();
 				else
@@ -39,7 +39,7 @@
 				$archive = NULL;
 
 				if(isset($_GET[START_DATE]) && isset($_GET[END_DATE])
-					$archive = $querier->dataarc($_GET[START_DATE], $_GET[END_DATE]);
+					$archive = $querier->getBetweenDates($_GET[START_DATE], $_GET[END_DATE]);
 
 				if($archive === NULL)
 					deliverNotFound();
