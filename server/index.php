@@ -35,7 +35,7 @@
 			case 3:
 				$archive = NULL;
 
-				if(isset($_GET[START_DATE]) && isset($_GET[END_DATE])
+				if(isset($_GET[START_DATE]) && isset($_GET[END_DATE]))
 					$archive = dataarc($_GET[START_DATE], $_GET[END_DATE]);
 
 				if($archive === NULL)
