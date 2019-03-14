@@ -8,8 +8,8 @@
 	const START_DATE = 'start';
 	const END_DATE = 'end';
 
-	if(isset($_GET[]) && !empty($_GET[METHOD_CODE])){
-		$name=$_GET[METHOD_CODE];
+	if(isset($_GET[METHOD_CODE]) && !empty($_GET[METHOD_CODE])){
+		$name = $_GET[METHOD_CODE];
 		
 		switch($name){
 			case 1:
