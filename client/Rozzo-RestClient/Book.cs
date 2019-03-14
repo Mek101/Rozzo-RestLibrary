@@ -15,6 +15,9 @@ namespace Rozzo_RestClient
         [JsonProperty("prezzo")]
         public int Price { private set; get; }
 
+        [JsonProperty("sconto")]
+        public float Discount { private set; get; }
+
         [JsonProperty("npagine")]
         public int Pages { private set; get; }
 
@@ -42,7 +45,7 @@ namespace Rozzo_RestClient
             Author = author;
         }
 
-        public override string ToString() { return Title + " " + Repart + " " + Price + " " + Author; }
+        public override string ToString() { return Title + " " + Repart + " " + Price + " " + Discount + " " + Author; }
     }
 
 
@@ -54,7 +57,7 @@ namespace Rozzo_RestClient
             Books = books;
         }
 
-        [JsonProperty("utente")]
+        [JsonProperty("user")]
         public string User { private set; get; }
 
         [JsonProperty("books")]

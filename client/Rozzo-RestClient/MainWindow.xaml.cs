@@ -72,16 +72,16 @@ namespace Rozzo_RestClient
 
         private async Task GetEnumFromCart(int cartCode)
         {
-            IReadOnlyResponse<BookWithUser[]> response = await _querier.EnumerateFromCartAsync(cartCode);
+            IReadOnlyResponse<BookWithUser> response = await _querier.EnumerateFromCartAsync(cartCode);
 
             lstBox_output.Items.Add("Response message: " + response.Message);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 Log("Response succesful.");
-                lstBox_output.Items.Add("From user: " + response.Data[0].User);
+                lstBox_output.Items.Add("From user: " + response.Data.User);
 
-                foreach (BookWithUser item in response.Data)
+                foreach (ReadOnlyBook item in response.Data.Books)
                     lstBox_output.Items.Add(item.ToString());
             }
             else
